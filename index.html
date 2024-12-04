@@ -1,0 +1,750 @@
+#### Count number of ways to cover a distance
+
+class Result
+{
+    static int count = 0;
+    static void countDistances(int d,int k){
+        if(d == 0)
+            count++;
+        for(int i=1;i<=k;i++){
+            if(d-i >= 0)
+                countDistances(d-i,k);
+        }
+    }
+  static int totalWaysToDistance(int d, int k){
+    // Write your code here
+      if(d == 0)
+          return 0;
+      countDistances(d,k);
+      return count;
+  }
+}
+
+#### Minimum Cost Path to last element of matrix
+
+class Result
+{
+  static int minCostPath(int cost[][], int m, int n){
+    int[][] dp = new int[m][n];
+    for(int i=m-1;i>=0;i--){
+      for(int j=n-1;j>=0;j--){
+        if(i == m-1 && j == n-1)
+          dp[i][j] = cost[i][j];
+        else if(i == m-1)
+          dp[i][j] = dp[i][j+1] + cost[i][j];
+        else if(j == n-1)
+          dp[i][j] = dp[i+1][j] + cost[i][j];
+        else
+          dp[i][j] = Math.min(dp[i+1][j],Math.min(dp[i][j+1],dp[i+1][j+1])) + cost[i][j];
+      }
+    }
+    return dp[0][0];
+  }
+}
+
+#### Longest Common Subsequence (LCS)
+
+class Result
+{
+  static int longestCommonSubsequence(String str1, String str2){
+    int m = str1.length();
+    int n = str2.length();
+    int[][] DP = new int[m+1][n+1];
+    for(int i=1;i<=m;i++){
+      for(int j=1;j<=n;j++){
+        if(str1.charAt(i-1) == str2.charAt(j-1))
+          DP[i][j] = DP[i-1][j-1] + 1;
+        else
+          DP[i][j] = Math.max(DP[i][j-1],DP[i-1][j]);
+      }
+    }
+    return DP[m][n];
+  }
+}
+
+#### The Subset Sum problem
+
+class Result
+{
+  static int subsetSum(int a[], int n, int sum){
+    if(sum == 0)
+      return 1;
+    if(n == 0 && sum > 0)
+      return 0;
+    int[][] dp = new int[n+1][sum+1];
+    for(int i=0;i<n+1;i++){
+      for(int j=0;j<sum+1;j++){
+        if(i==0 && j==0)
+          dp[i][j] = 1;
+        else if(i == 0)
+          dp[i][j] = 0;
+        else if(j == 0)
+          dp[i][j] = 1;
+        else{
+          if(dp[i-1][j] == 1)
+            dp[i][j] = 1;
+          else{
+            int val = a[i-1];
+            if(j >= val && dp[i-1][j-val] == 1){
+              dp[i][j] = 1;
+            }
+          }
+        }
+      }
+    }
+    return dp[n][sum];
+  }
+}
+
+####  Matrix Chain Multiplication problem
+
+class Result
+{
+  // Matrix A[i] has dimension p[i-1] x p[i]  for i = 1..n 
+  static int matrixChainMultiplication(int p[], int n){
+    int[][] DP = new int[n+1][n+1];
+    for(int len=2;len<n+1;len++){
+      for(int row=0,col=len;row<n+1-len;row++,col++){
+        DP[row][col] = Integer.MAX_VALUE;
+        for(int k=row+1;k<col;k++)
+          DP[row][col] = Math.min(DP[row][col],DP[row][k]+DP[k][col]+(p[row]*p[k]*p[col]));
+      }
+    }
+    return DP[0][n];
+  }
+}
+
+## 0-1 Knapsack problem 
+
+class Result
+{
+  static int zeroOneKnapsack(int val[], int weight[], int n, int capacity){
+    // Write your code here
+      int [] dp= new int [capacity + 1];
+      for(int i=1;i<n+1;i++){
+          for(int w= capacity;w>=0;w--){
+              if(weight[i-1]<=w){
+                  dp[w]=Math.max(dp[w],dp[w-weight[i-1]]+val[i-1]);
+              }
+          }
+      }
+      return dp[capacity];
+  }
+}
+
+####  Tom And Permutations
+
+class Solve {
+    ArrayList<String> arr = new ArrayList<>();
+    public void addPermutation(String str, String perm){
+      if(str.length() == 0){
+        arr.add(perm);
+        return ;
+      }
+      for(int i=0;i<str.length();i++){
+        char currC = str.charAt(i);
+        String restStr = str.substring(0,i) + str.substring(i+1);
+        addPermutation(restStr,perm+currC);
+      }
+    }
+    ArrayList<String> permute(String str) {
+      if(str == "")
+        return null;
+      addPermutation(str,"");
+      return arr;
+    }
+  }
+
+####  Print all strings of n-bits
+
+class Solve
+{
+  static ArrayList<String> res = new ArrayList<>();
+  static void insertTheArray(int arr[], int n){
+    String st = "";
+    for(int i=0;i<n;i++){
+      char c = (char)(arr[i]+'0');
+      st += c;
+    }
+    res.add(st);
+  }
+  static void generateAllBinaryStrings(int n,int arr[], int i){
+    if (i == n) {
+        insertTheArray(arr, n);
+        return;
+    }
+    arr[i] = 0;
+    generateAllBinaryStrings(n, arr, i + 1);
+    arr[i] = 1;
+    generateAllBinaryStrings(n, arr, i + 1);
+}
+    void generateAllStrings(int n, int i, char currStr[], ArrayList<String> strs){ 
+      int arr[] = new int[n];
+      generateAllBinaryStrings(n, arr, 0); 
+      for(String s: res){
+        strs.add(s);
+      }
+      res.clear();
+    } 
+}
+
+#### Solve N Queen problem
+
+class Result 
+{
+// Complete this function to check placing queen at board[row][col] is safe or not by checking current row, left diagonal & right diagonal.
+  boolean isSafe(int board[][], int row, int col,int N) 
+  { 
+    for(int c=0;c<col;c++)
+      if(board[row][c] == 1)
+        return false;
+    for(int r=row,c=col;r>=0 && c>=0;r--,c--)
+      if(board[r][c] == 1)
+        return false;
+    for(int r=row,c=col;r<N && c>=0;r++,c--)
+      if(board[r][c] == 1)
+        return false;
+    return true;
+  } 
+// Complete this function to solve the problem and save the answers in sol ArrayList as required.
+  boolean solveNQUtil(int board[][], int col, int N, ArrayList<ArrayList<Integer> > sol)
+  { 
+    if(col >= N){
+      ArrayList<Integer> res = new ArrayList<>();
+      for(int i=0;i<N;i++){
+        for(int j=0;j<N;j++){
+          if(board[i][j] == 1)
+            res.add(j);
+        }
+      }
+      sol.add(res);
+      return true;
+    }
+    boolean foundSolution = false;
+    for(int row=0;row<N;row++){
+      if(isSafe(board,row,col,N)){
+        board[row][col] = 1;
+        foundSolution = solveNQUtil(board, col+1, N, sol) || foundSolution;
+        board[row][col] = 0;
+      }
+    }
+    return foundSolution;
+  } 
+}
+
+#####  Solve Sudoku 
+
+class Result {
+    static boolean isSafe(int mat[][],int row,int col,int n){
+      for(int i=0;i<mat.length;i++){
+        if(mat[row][i] == n)
+          return false;
+        if(mat[i][col] == n)
+          return false;
+      }
+      int sr = (row/3) * 3;
+      int sc = (col/3) * 3;
+      for(int i=sr;i<sr+3;i++){
+        for(int j=sc;j<sc+3;j++){
+          if(mat[i][j] == n)
+            return false;
+        }
+      }
+      return true;
+    }
+    static int mySudoku(int mat[][],int row,int col){
+      if(row == mat.length)
+        return 1;
+      int nrow = 0;
+      int ncol = 0;
+      if(col == mat.length-1){
+        nrow = row+1;
+        ncol = 0;
+      }
+      else{
+        ncol = col+1;
+        nrow = row;
+      }
+      if(mat[row][col] != 0){
+        if(mySudoku(mat,nrow,ncol) == 1)
+          return 1;
+      }
+      else{
+        for(int i=1;i<=9;i++){
+          if(isSafe(mat,row,col,i)){
+            mat[row][col] = i;
+            if(mySudoku(mat,nrow,ncol) == 1)
+              return 1;
+            else
+              mat[row][col] = 0;
+          }
+        }
+      }
+      return -1;
+    }
+    static int solveSudoku(int mat[][])
+    {
+      return mySudoku(mat,0,0);
+    }
+  }
+
+  ####  Rat in a Maze Problem
+
+  class Result {
+    public static int ways(int i,int j,int maze[][],int DP[][]){
+      if(i<0 || j<0)
+        return 0;
+      if(maze[i][j] == -1)
+        return 0;
+      if(i==0 && j==0)
+        return 1;
+      if(DP[i][j] == 0)
+        DP[i][j] = ways(i,j-1,maze,DP) + ways(i-1,j,maze,DP);
+      return DP[i][j];
+    }
+    public static int solveMaze(int maze[][], int size) {
+      if(size == 0)
+        return 0;
+      int DP[][] = new int[size+1][size+1];
+      return ways(size-1,size-1,maze,DP);
+    }
+  }
+
+  ####  Count word in the board 
+
+  // Do not change the class name
+class Result {
+    static boolean[][] visited;
+    static int count = 0;
+    static int countWord(char board[][], String word, int m, int n) {
+            visited = new boolean[m][n];
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (board[i][j] == word.charAt(0)) {
+                        searchWord(board, word, i, j, m, n, 0);
+                           // count++;
+                    }
+                }
+            }
+            return count;
+     }
+     static void searchWord(char board[][], String word, int i, int j, int m, int n, int index) {
+    if (i < 0 || j < 0 || i >= m || j >= n)
+        return;
+    if (visited[i][j] || board[i][j] != word.charAt(index))
+        return;
+    if (index + 1 == word.length()) {
+        count++;
+        return;
+    }
+    visited[i][j] = true;
+    searchWord(board, word, i - 1, j, m, n, index + 1);
+    searchWord(board, word, i + 1, j, m, n, index + 1);
+    searchWord(board, word, i, j - 1, m, n, index + 1);
+    searchWord(board, word, i, j + 1, m, n, index + 1);
+    visited[i][j] = false;
+}
+}
+
+#### Find the minimum number of edges in a path of a graph
+
+class Result{
+    static int number_of_edges(int n){
+      if(n == 1)
+        return 0;
+      Queue<Integer> q = new LinkedList<>();
+      int misDistance[] = new int[n+1];
+      q.offer(1);
+      while(!q.isEmpty()){
+        int curr = q.poll();
+        if(curr+1 == n || curr*3 == n)
+          return misDistance[curr] + 1;
+        if(curr+1 < n && misDistance[curr+1] == 0){
+          q.offer(curr+1);
+          misDistance[curr+1] = misDistance[curr] + 1;
+        }
+        if(curr*3 < n && misDistance[curr*3] == 0){
+          q.offer(curr*3);
+          misDistance[curr*3] = misDistance[curr] + 1;
+        }
+      }
+      return 0;
+    }
+  }
+
+  #### Find path in a directed graph
+
+  import java.util.*;
+class Main{
+    public static boolean checkPath(List<ArrayList<Integer>> adj,boolean visited[],int src,int des){
+      visited[src] = true;
+      if(src == des)
+        return true;
+      for(int it: adj.get(src)){
+        if(!visited[it]){
+          if(checkPath(adj,visited,it,des))
+            return true;
+        }
+      }
+      return false;
+    }
+    public static void DFS(List<ArrayList<Integer>> adj, int src, int des){
+      boolean visited[] = new boolean[adj.size()];
+      if(checkPath(adj,visited,src,des))
+        System.out.println("YES");
+      else
+        System.out.println("NO");
+    }
+    public static void main(String[] args)
+    {
+        Scanner sc = new Scanner(System.in);
+        int v = sc.nextInt();
+        int e = sc.nextInt();
+        List<ArrayList<Integer>> adj = new ArrayList<>();
+        for(int i=0;i<v;i++)
+          adj.add(new ArrayList<>());
+        for(int i=0;i<e;i++){
+          int s = sc.nextInt();
+          int d = sc.nextInt();
+          adj.get(s).add(d);
+        }
+       int src = sc.nextInt();
+       int des = sc.nextInt();
+       DFS(adj,src,des);
+    }
+}
+
+####  Number of Islands
+
+class Result {
+    static boolean isSafe(int mat[][],boolean visited[][],int row,int col,int m,int n){
+      return row>=0 && row<m && col>=0 && col<n && !visited[row][col] && mat[row][col] == 1;
+    }
+    static void DFS(int mat[][],boolean visited[][],int i,int j,int m,int n){
+      visited[i][j] = true;
+      int row[] = {-1,0,1,0};
+      int col[] = {0,1,0,-1};
+      for(int k=0;k<4;k++){
+        int nrow = i + row[k];
+        int ncol = j + col[k];
+        if(isSafe(mat,visited,nrow,ncol,m,n))
+          DFS(mat,visited,nrow,ncol,m,n);
+      }
+    }
+    static int countIslands(int mat[][], int m, int n){
+      boolean visited[][] = new boolean[m][n];
+      int count = 0;
+      for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++){
+          if(!visited[i][j] && mat[i][j] == 1){
+            DFS(mat,visited,i,j,m,n);
+            count++;
+          }
+        }
+      }
+      return count;
+    }   
+  }
+
+  ####  Shortest path in a binary maze
+
+  class Pair{
+    int i;
+    int j;
+    int d;
+    public Pair(int i,int j,int d){
+      this.i = i;
+      this.j = j;
+      this.d = d;
+    }
+   }
+   class Result {
+       static boolean isSafe(int mat[][],boolean visited[][],int row,int col,int m,int n){
+         return row>=0 && row<m && col>=0 && col<n && !visited[row][col] && mat[row][col] == 1;
+       }
+       static int BFS(int mat[][],boolean visited[][],int srcR,int srcC,int destR,int destC,int m,int n){
+         int row[] = {-1,0,1,0};
+         int col[] = {0,1,0,-1};
+         Queue<Pair> q = new LinkedList<>();
+         q.offer(new Pair(srcR,srcC,0));
+         visited[srcR][srcC] = true;
+         while(!q.isEmpty()){
+           Pair curr = q.poll();
+           if(curr.i == destR && curr.j == destC){ 
+             return curr.d;
+           }
+           for(int k=0;k<4;k++){
+             int nrow = curr.i + row[k];
+             int ncol = curr.j + col[k];
+             if(isSafe(mat,visited,nrow,ncol,m,n)){
+               visited[nrow][ncol] = true;
+               q.offer(new Pair(nrow,ncol,curr.d+1));
+             }
+           }
+         }
+         return -1;
+       }
+       static int shortestPath(int mat[][], int srcR, int srcC, int destR, int destC, int m, int n){
+         if(mat[srcR][srcC] !=1 || mat[destR][destC] !=1)
+           return -1;
+         boolean visited[][] = new boolean[m][n];
+         return BFS(mat,visited,srcR,srcC,destR,destC,m,n);
+       }
+   }
+
+#### Depth First Traversal of Graph
+
+   void DFSUtil(int v, boolean visited[]) 
+{ 
+  System.out.print(v+" ");
+  visited[v] = true;
+  for(int i=0;i<adjVertices.get(v).size();i++){
+    if(visited[adjVertices.get(v).get(i)] == false)
+      DFSUtil(adjVertices.get(v).get(i),visited);
+  }
+} 
+void DFS(int v) 
+{ 
+  boolean[] visited = new boolean[adjVertices.size()];
+  DFSUtil(v,visited);
+}
+
+#### Breadth First Traversal of Graph 
+
+void BFS(int v) 
+{ 
+  if(adjVertices.containsKey(v) == false)
+    return ;
+  Queue<Integer> q = new LinkedList<>();
+  boolean visited[] = new boolean[adjVertices.size()];
+  q.offer(v);
+  visited[v] = true;
+  while(!q.isEmpty()){
+   int curr = q.poll();
+   System.out.print(curr+" ");
+   for(int i=0;i<adjVertices.get(curr).size();i++){
+     if(visited[adjVertices.get(curr).get(i)] == false){
+       visited[adjVertices.get(curr).get(i)] = true;
+       q.offer(adjVertices.get(curr).get(i));
+     }
+   }
+  }
+}
+
+#### Find the cycle in undirected graph
+
+import java.util.*;
+class Main{
+    public static boolean checkCycle(List<ArrayList<Integer>> adj,boolean visited[],int curr,int parent){
+      visited[curr] = true;
+      for(int neighbour: adj.get(curr)){
+        if(!visited[neighbour]){
+          if(checkCycle(adj,visited,neighbour,curr))
+            return true;
+        }
+        else if(neighbour != parent){
+         return true;
+        }
+      }
+      return false;
+    }  
+    public static void DFS(List<ArrayList<Integer>> adj){
+      if(adj.size() <= 0)
+        return ;
+      boolean[] visited = new boolean[adj.size()];
+      boolean hasCycle = false;
+      for(int i=0;i<adj.size();i++){
+        if(visited[i] == false){
+         if(checkCycle(adj,visited,i,-1)){
+           hasCycle = true;
+           break;
+         }
+        }
+      }
+      if(hasCycle)
+        System.out.println("Yes");
+      else
+        System.out.println("No");
+    }
+    public static void main(String[] args)
+    {
+       Scanner sc = new Scanner(System.in);
+       int v = sc.nextInt();
+       int e = sc.nextInt();
+       List<ArrayList<Integer>> adj = new ArrayList<>();
+       for(int i=0;i<v;i++)
+         adj.add(new ArrayList<>());
+       for(int i=0;i<e;i++){
+         int src = sc.nextInt();
+         int des = sc.nextInt();
+         adj.get(src).add(des);
+         adj.get(des).add(src);
+       }
+      DFS(adj);
+    }
+}
+
+#### Reverse the order of words of a string
+
+class Result {
+  static String revWordsOrder(String str) {
+    // Write your code here
+    String s[]=str.trim().split(" ");
+    StringBuilder ans=new StringBuilder();
+    for(int i=s.length-1;i>=0;--i)
+    {
+      ans.append(s[i]);
+      if(i!=0)
+      {
+        ans.append(" ");
+      }
+    }
+    return ans.toString();
+  }
+}
+
+#### String is subsequence or not
+
+class Result{
+  // Return true if the str2 is a subsequence of str1, else return false
+  static boolean strSubsequence(String str1, String str2) {
+    // Write your code here
+      int m = str1.length();
+        int n = str2.length();
+        int j = 0; // Index for str2
+        // Traverse str1 and str2
+        for (int i = 0; i < m && j < n; i++) {
+            if (str1.charAt(i) == str2.charAt(j)) {
+                j++;
+            }
+        }
+        // If we have traversed all characters of str2
+        return j == n;
+  }
+}
+
+#### Technical Issue With The Keyboard
+
+class Result {
+  // Return the updated string
+  static String getDesiredString(String str) {
+    // Write your code here
+    LinkedHashSet<Character>set=new LinkedHashSet<>();
+    StringBuilder ans=new StringBuilder();
+    for(char ch:str.toCharArray())
+    {
+      set.add(ch);
+    }
+    for(char ch:set)
+    {
+      ans.append(ch);
+    }
+    return ans.toString();
+  }
+}
+
+
+#### Implement atoi and itoa functions
+
+class Result {
+  static String itoa(int num) {
+   if (num == 0) {
+     return "0";
+   }
+   if (num < 0) {
+     return "-" + itoa(-num);
+   }
+   if (num > 0) {
+     return (num / 10 == 0 ? "" : itoa(num / 10)) + (char) ('0' + num % 10);
+   }
+   return "";
+ }
+ static int atoi(String str) {
+   return atoiHelper(str, 0, 0);
+ }
+ private static int atoiHelper(String str, int index, int value) {
+   if (index == str.length()) {
+     return value;
+   }
+   value = value * 10 + (str.charAt(index) - '0');
+   return atoiHelper(str, index + 1, value);
+ } 
+}
+
+#### Count words
+
+class Result {
+  static int countWords(String str) {
+    // Write your code here
+    if(str==" " || str.length()==0)
+      return 0;
+    String s[]=str.split("\\s+");
+    return s.length;
+  }
+}
+
+#### Spell the number
+
+class Result {
+  static void intToWord(int num) {
+    if (num == 0) {
+        System.out.print("zero");
+        return;
+    }
+    String[] ONES = {"", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+    String[] TEENS = {"", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"};
+    String[] TENS = {"", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"};
+    String[] THOUSANDS = {"", "thousand", "lakhs"};
+    StringBuilder result = new StringBuilder();
+    if (num / 100000 > 0) {
+        result.append(ONES[num / 100000]).append(" ").append(THOUSANDS[2]).append(" ");
+        num %= 100000;
+    }
+    if (num / 1000 > 0) {
+        if (num / 1000 > 10 && num / 1000 < 20) {
+            result.append(TEENS[num / 1000 % 10]).append(" ").append(THOUSANDS[1]).append(" ");
+        } else {
+            result.append(TENS[num / 10000]).append(" ");
+            result.append(ONES[(num / 1000) % 10]).append(" ").append(THOUSANDS[1]).append(" ");
+        }
+        num %= 1000;
+    }
+    if (num / 100 > 0) {
+        result.append(ONES[num / 100]).append(" hundred ");
+        num %= 100;
+    }
+    if (num > 0) {
+        if (num > 10 && num < 20) {
+            result.append(TEENS[num % 10]).append(" ");
+        } else {
+            result.append(TENS[num / 10]).append(" ");
+            result.append(ONES[num % 10]).append(" ");
+        }
+    }
+    System.out.print(result.toString().trim());
+}
+}
+
+#### Check if strings are rotations or not
+
+class Result {
+  // return 1 for YES and 0 for NO.
+  static int isRotation(String str1, String str2) {
+    // Write your code here
+     if (str1.length() != str2.length()) {
+      return 0; // NO
+    }
+    // Concatenate str1 with itself
+    String concatenated = str1 + str1;
+    // Check if str2 is a substring of the concatenated string
+    if (concatenated.contains(str2)) {
+      return 1; // YES
+    } else {
+      return 0; // NO
+    }
+  }
+}
+
+#
+
+
